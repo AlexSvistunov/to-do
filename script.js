@@ -2,10 +2,18 @@ const input = document.querySelector('.ex__field');
 const addBtn = document.querySelector('.ex__add-btn');
 const form = document.querySelector('.ex__form');
 const list = document.querySelector('.ex__list');
-
 const arrayOfObjects = [];
 
+function renderLocalStorage() {
+  const storedTasks = JSON.parse(localStorage.getItem(0));
+  arrayOfObjects.push(storedTasks);
+  for (let i = 0; i < arrayOfObjects.length; i++) {
+    addTask(arrayOfObjects[i])
+  }
+  
+}
 
+renderLocalStorage();
 
 addBtn.addEventListener('click', (e) => {
   e.preventDefault();
@@ -35,15 +43,21 @@ function template(obj, index) {
 }
 
 
-
 function addTask(obj) {
   const index = arrayOfObjects.length;
   list.insertAdjacentHTML('beforeend', template(obj, index))
   arrayOfObjects.push(obj);
   input.value = '';
-  console.log(arrayOfObjects);
+
+  (function taskToLocal(index) {
+
+    localStorage.setItem(String(index), JSON.stringify(obj))
+
+  })(index)
 
 }
+
+//add task to array and add task to html
 
 function deleteTask(obj) {
     const index = obj.closest('.ex__element').dataset.el;
@@ -53,9 +67,7 @@ function deleteTask(obj) {
       list.insertAdjacentHTML('beforeend', template(arrayOfObjects[i], i));
     }
   
-
   //It's probably not right!!!
-
 
 }
 
@@ -78,8 +90,6 @@ list.addEventListener('click', function(e) {
   if(currentTarget.classList.contains('ex__finish')) {
     getDone(currentTarget);
   }
-
-
 
 });
 
